@@ -9,7 +9,7 @@ y_data = [1, 2, 3]
 
 # 通过 hypothesis = W * x_data +b 去试图查找 W 权重和 b 偏值，也就是我们要求的值
 # 我们知道 W 应该为 1 ，b 应该为 0
-# 但是这里我们让 Tensofrlow 来指出
+# 但我们还是让 TensorFlow 来帮我们找出来
 W = tf.Variable(tf.random_uniform([1], -1.0, 1.0), name='Weight')
 b = tf.Variable(tf.random_uniform([1], -1.0, 1.0), name='bias')
 
