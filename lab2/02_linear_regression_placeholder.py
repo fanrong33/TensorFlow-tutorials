@@ -38,9 +38,6 @@ sess.run(init)
 # 拟合平面
 for step in range(2001):
     sess.run(train, feed_dict={X: x_data, Y: y_data})
-    W_vals.append(sess.run(W))
-    b_vals.append(sess.run(b))
-    cost_vals.append(sess.run(cost, feed_dict={X: x_data, Y: y_data}))
     if step % 20 == 0:
         print(step, sess.run(cost, feed_dict={X: x_data, Y: y_data}), sess.run(W), sess.run(b))
 
