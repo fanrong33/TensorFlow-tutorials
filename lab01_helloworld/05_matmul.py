@@ -13,6 +13,7 @@ print result
 '''
 Out:
 Tensor("matmul:0", shape=(2, 2), dtype=float32)
+二行两列
 '''
 
 with tf.Session() as sess:
