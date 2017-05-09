@@ -16,16 +16,17 @@ x = tf.placeholder(tf.float32, shape=(1, 2), name='input')
 a = tf.matmul(x, w1)
 y = tf.matmul(a, w2)
 
-
 sess = tf.Session()
 init = tf.global_variables_initializer()
 sess.run(init)
 
 # 下面一行将报错 InvalidArgumentError (see above for traceback): You must feed a value for placeholder 
 # tensor 'input' with dtype float and shape [1,2]
-print(sess.run(y, feed_dict={x: [[0.7, 0.9]]}))
+print(sess.run(y, feed_dict={x: [ [0.7, 0.9] ]}))
 
-# 输出 [[ 3.95757794]]
+'''
+输出 [[ 3.95757794]]
+'''
 
 print(sess.run(w1))
 '''

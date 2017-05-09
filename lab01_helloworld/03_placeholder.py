@@ -2,7 +2,7 @@
 
 import tensorflow as tf
 
-a = tf.placeholder(tf.int16) # 其实就是函数的输入参数！[尴尬]
+a = tf.placeholder(tf.int16) # 其实就是函数的输入参数！占位符😄
 b = tf.placeholder(tf.int16) 
 
 add = tf.add(a, b)  # 定义add函数，需要a和b参数
