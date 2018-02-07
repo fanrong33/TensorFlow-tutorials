@@ -2,12 +2,10 @@
 
 from __future__ import print_function
 
-
 import tensorflow as tf
 
-hello = tf.constant('Hello world!')
+hello = tf.constant('Hello world!') # 注意：此处常量为小写的
 
-# Start tf session
 sess = tf.Session()
 
 print(sess.run(hello))

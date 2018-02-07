@@ -2,23 +2,32 @@
 
 import tensorflow as tf
 
-a = tf.placeholder(tf.int16) # 其实就是函数的输入参数！占位符😄
-b = tf.placeholder(tf.int16) 
+# add(a+b)
 
-add = tf.add(a, b)  # 定义add函数，需要a和b参数
+a = tf.placeholder(tf.int16) # 其实就是函数的输入参数！占位符😄
+b = tf.placeholder(tf.int16)
+
+add = tf.add(a, b) 
 mul = tf.multiply(a, b)
 
-# Same op?
 print(add)
+''' Tensor("Add_1:0", dtype=int16) '''
 print(a + b)
+''' Tensor("add_1:0", dtype=int16) '''
 print(mul)
 print(a * b)
 
-
 # Launch the default graph
 sess = tf.Session()
-print(sess.run(add, feed_dict={a: 2, b: 3}))
+result = sess.run(add, feed_dict={a: 2, b: 3})
+print(result)
+''' 5 '''
 
-# it's work!
-feed = { a: 3, b: 5 }
-print(sess.run(mul, feed_dict=feed))
+feed = {a: 3, b: 5}
+result = sess.run(mul, feed_dict=feed)
+print(result)
+''' 15 '''
+
+
+
+
