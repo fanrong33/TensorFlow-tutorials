@@ -11,20 +11,22 @@ batch_size = 8
 # 定义神经网络的参数
 w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))
 w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))
-biases1 = tf.Variable(tf.zeros([1, 3]) + 0.1)
-biases2 = tf.Variable(tf.zeros([1, 1]) + 0.1)
+biases1 = tf.Variable(tf.zeros([3]) + 0.1)
+biases2 = tf.Variable(tf.zeros([1]) + 0.1)
 
 
 x  = tf.placeholder(tf.float32, shape=(None, 2), name='x-input')
 y_ = tf.placeholder(tf.float32, shape=(None, 1), name='y-input')
 
 # 定义神经网络前向传播的过程, 加入偏置项和激励函数
+# x * w1 = a
+#          a * w2 =  y
 a = tf.nn.relu(tf.matmul(x, w1) + biases1)
 y = tf.nn.relu(tf.matmul(a, w2) + biases2)
 
 # 定义损失函数的反向传播的算法
 # cross_entropy = -tf.reduce_mean(y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)))
-cross_entropy = tf.nn.softmax_cross_entropy_with_logits(y, y_)
+cross_entropy = tf.nn.softmax_cross_entropy_with_logits(labels=y_, logits=y)
 train = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
 
 
@@ -67,7 +69,7 @@ with tf.Session() as sess:
         if i %1000 == 0:
             # 每隔一段时间计算在所有数据上的交叉熵并输出。
             total_cross_entropy = sess.run(cross_entropy, feed_dict={x: X, y_: Y})
-            print("After %d training step(s), cross entropy on all data is %g" % (i, total_cross_entropy))
+            print("After %d training step(s), cross entropy on all data is %s" % (i, total_cross_entropy))
             '''
             After 0 training step(s), cross entropy on all data is 0.0674925
             After 1000 training step(s), cross entropy on all data is 0.0163385
