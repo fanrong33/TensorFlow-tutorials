@@ -1,8 +1,8 @@
 # encoding: utf-8
-# author 蔡繁荣
-# version 1.0.0 build 02170426
+# version 1.0.0 build 20170426
 
-""" 完整神经网络训练和测试代码
+"""
+完整神经网络训练和测试代码
 最佳实践
 """
 
@@ -26,6 +26,19 @@ def add_layer(input_tensor, in_size, out_size, activation_function=None,):
     return outputs
 
 
+# 定义计算精度函数
+def compute_accuracy(v_xs, v_ys):
+    global y
+    y_pred = sess.run(y, feed_dict={x: v_xs})
+
+    # 预测的y_与实际数据集的y进行对比判断是否相等
+    correct_prediction = tf.equal(tf.argmax(y_pred, 1), tf.argmax(v_ys, 1))
+    # 统计正确的比例
+    accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
+
+    result = sess.run(accuracy, feed_dict={x: v_xs, y_: v_ys})
+    return result
+
 
 # 定义要输入神经网络的 placeholder
 x  = tf.placeholder(tf.float32, [None, 784], name='x-input')
@@ -35,11 +48,11 @@ y_ = tf.placeholder(tf.float32, [None, 10], name='y-input')
 # add output layer
 # prediction = add_layer(x, 784, 10, activation_function=tf.nn.softmax) # 加入激励函数去线性化，relu效果很差，不知道为什么
 layer1 = add_layer(x, 784, 500, activation_function=tf.nn.softmax) # 加入激励函数去线性化，relu效果很差，不知道为什么
-prediction = add_layer(layer1, 500, 10, activation_function=tf.nn.softmax)
+y      = add_layer(layer1, 500, 10, activation_function=tf.nn.softmax)
 
 
 # loss函数 选用交叉熵函数。交叉熵用来衡量预测值和真实值的相似程度，如果完全相同，它们的交叉熵等于零。
-cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(prediction), reduction_indices=[1]))
+cross_entropy = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(y), reduction_indices=[1]))
 
 train = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 
@@ -47,51 +60,36 @@ train = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
 # 模型持久化
 saver = tf.train.Saver()
 
+with tf.Session() as sess:
+    init = tf.global_variables_initializer()
+    sess.run(init)
 
-sess = tf.Session()
-init = tf.global_variables_initializer()
-sess.run(init)
+    for step in range(10001): # 0 - 10000
 
-validate_feed = {x: mnist.validation.images, y_: mnist.validation.labels}
-test_feed = {x: mnist.test.images, y_: mnist.test.labels}
+        # 训练数据集
+        batch_xs, batch_ys = mnist.train.next_batch(100)
+        sess.run(train, feed_dict={x: batch_xs, y_: batch_ys})
 
-for step in range(10001): # 0 - 10000
+        # 每100轮输出一次在验证数据集上的测试结果
+        if step % 100 == 0:
+            
+            loss = sess.run(cross_entropy, feed_dict={x: batch_xs, y_: batch_ys})
 
-    # 训练数据集
-    batch_x, batch_y = mnist.train.next_batch(100)
-    sess.run(train, feed_dict={x: batch_x, y_: batch_y})
+            v_xs = mnist.validation.images # 原来v_xs 是validation验证数据集，t_xs 是test测试数据集
+            v_ys = mnist.validation.labels
 
-    # 每1000轮输出一次在验证数据集上的测试结果
-    if step % 1000 == 0:
-        # 计算精度
-        v_xs = mnist.validation.images
-        v_ys = mnist.validation.labels
+            validation_accuracy = compute_accuracy(v_xs, v_ys)
+            print("After %d training step(s), validation accuracy is %g, loss is %s" % (step, validation_accuracy, loss))
 
-        y_prediction = sess.run(prediction, feed_dict = {x: v_xs})
-
-        correct_prediction = tf.equal(tf.argmax(y_prediction, 1), tf.argmax(v_ys, 1))
-        accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-        validation_accuracy = sess.run(accuracy, feed_dict={x: v_xs, y_: v_ys})
-        print("After %d training step(s), validation accuracy is %g" % (step, validation_accuracy))
-
-        # 记住当前训练的step(s)
-        with open('current_step.txt', 'w') as fp:
-            fp.write('%s' % step)
-
-        # 删除之前的，保留最新的
-        saver.save(sess, 'model.ckpt')
+            # 持久化模型
+            saver.save(sess, 'save/model.mod')
 
 
-# 在训练结束之后，在测试数据上检查神经网络模型的最终正确率
-t_xs = mnist.test.images
-t_ys = mnist.test.labels
+    # 在训练结束之后，在测试数据上检查神经网络模型的最终正确率
+    t_xs = mnist.test.images
+    t_ys = mnist.test.labels
 
-y_prediction = sess.run(prediction, feed_dict={x: t_xs})
+    loss = sess.run(cross_entropy, feed_dict={x: t_xs, y_: t_ys})
 
-correct_prediction = tf.equal(tf.argmax(y_prediction, 1), tf.argmax(t_ys, 1))
-accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-
-test_accuracy = sess.run(accuracy, feed_dict={x: t_xs, y_: t_ys})
-print("After %d training step(s), test accuracy is %g" % (10000, test_accuracy))
-
+    test_accuracy = compute_accuracy(t_xs, t_ys)
+    print("After %d training step(s), test accuracy is %g, loss is %s" % (10000, test_accuracy, loss))
