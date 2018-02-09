@@ -42,6 +42,23 @@ def compute_accuracy(v_xs, v_ys):
     result = sess.run(accuracy, feed_dict={x: v_xs, y_: v_ys})
     return result
 
+    # print(v_ys[0])
+    # [ 0.  0.  0.  0.  0.  0.  0.  1.  0.  0.]
+
+    # print("y prediction %s" % y_pred[0])
+    #y prediction [  1.21815374e-05   6.98716380e-04   1.38545025e-03   1.68449292e-03
+    #   1.16552451e-06   1.75877038e-04   3.51117092e-06   9.89122689e-01
+    #   1.00920763e-04   6.81501720e-03]
+
+    # print('argmax: %s' % sess.run(tf.argmax(y_pred, 1)))
+    # argmax: [7 2 1 ..., 4 5 6]
+    # print('argmax: %s' % sess.run(tf.argmax(y_pred, 1))[0])
+    # argmax: 7
+
+    # y_correct_pre = sess.run(correct_prediction, feed_dict={x: t_xs, y_: t_ys})
+    # print('y correct prediction %s' % y_correct_pre[0])
+    # y correct prediction True
+
 
 # 数据中包含55000张训练图片，每张图片的分辨率是28×28，所以我们的训练网络输入应该是28×28=784个像素数据。
 # 定义要输入神经网络的 placeholder 
