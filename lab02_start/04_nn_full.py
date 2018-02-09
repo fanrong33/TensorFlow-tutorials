@@ -9,23 +9,6 @@
 import tensorflow as tf
 from numpy.random import RandomState
 
-# 定义训练数据 batch 的大小
-batch_size = 8
-
-# 定义神经网络的参数
-w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))
-w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))
-
-x  = tf.placeholder(tf.float32, shape=(None, 2), name='x-input')
-y_ = tf.placeholder(tf.float32, shape=(None, 1), name='y-input')
-
-# 定义神经网络前向传播的过程
-a = tf.matmul(x, w1)
-y = tf.matmul(a, w2)
-
-# 定义损失函数的反向传播的算法 交叉熵
-cross_entropy = -tf.reduce_mean(y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)))
-train = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
 
 # 通过随机数生成一个模拟数据集
 rdm = RandomState(1)
@@ -45,6 +28,25 @@ print(Y)
 '''
 [[0], ... , [1]]
 '''
+
+
+# 定义训练数据 batch 的大小
+batch_size = 8
+
+# 定义神经网络的参数
+w1 = tf.Variable(tf.random_normal([2, 3], stddev=1, seed=1))
+w2 = tf.Variable(tf.random_normal([3, 1], stddev=1, seed=1))
+
+x  = tf.placeholder(tf.float32, shape=(None, 2), name='x-input')
+y_ = tf.placeholder(tf.float32, shape=(None, 1), name='y-input')
+
+# 定义神经网络前向传播的过程
+a = tf.matmul(x, w1)
+y = tf.matmul(a, w2)
+
+# 定义损失函数的反向传播的算法 交叉熵
+cross_entropy = -tf.reduce_mean(y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)))
+train = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
 
 with tf.Session() as sess:
     init = tf.global_variables_initializer()
@@ -67,8 +69,10 @@ with tf.Session() as sess:
         # 每次选取batch_size个样本进行训练。
         start = (step * batch_size) % dataset_size
         end   = min(start+batch_size, dataset_size)
+        # print(start, end)
+        # (0, 8) (8, 16)
 
-        # 通过选取的样本训练神经网络病更新参数。
+        # 通过选取的样本训练神经网络并更新参数。
         sess.run(train, feed_dict={x: X[start:end], y_: Y[start:end]})
         if step %1000 == 0:
             # 每隔一段时间计算在所有数据上的交叉熵并输出。
