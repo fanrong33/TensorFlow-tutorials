@@ -1,5 +1,5 @@
 # encoding: utf-8
-# version 1.0.2 build 20170426
+# version 1.0.3 build 20180210
 
 """ 通过 input_data.read_data_sets 函数生成的类会自动将 MNIST 数据集划分为 train、validation 和 test 三个数据集
 思路事物的本质（之前没考虑到mnist的结构）
@@ -23,7 +23,10 @@ print("Testing data size: %s" % mnist.test.num_examples)
 ''' Testing data size: 10000 '''
 
 print("Example traning data: %s" % mnist.train.images[0])
-''' [0. 0. ... 784个 ... 0.27058825 0.]  28x28 ''' 
+'''
+[0. 0. ... 784个 ... 0.27058825 0.]  28x28 
+像素矩阵中元素的取值范围为[0,1]，这样白色的部分也就是大部分为0，减少计算的复杂度
+''' 
 
 print("Example training data label: %s" % mnist.train.labels[0])
 ''' Example training data label: [ 0.  0.  0.  0.  0.  0.  0.  1.  0.  0.] '''
