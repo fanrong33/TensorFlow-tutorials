@@ -44,7 +44,7 @@ y_ = tf.placeholder(tf.float32, shape=(None, 1), name='y-input')
 a = tf.matmul(x, w1)
 y = tf.matmul(a, w2)
 
-# 定义损失函数的反向传播的算法 交叉熵
+# 定义loss损失函数的反向传播的算法 交叉熵
 cross_entropy = -tf.reduce_mean(y_ * tf.log(tf.clip_by_value(y, 1e-10, 1.0)))
 train = tf.train.AdamOptimizer(0.001).minimize(cross_entropy)
 
