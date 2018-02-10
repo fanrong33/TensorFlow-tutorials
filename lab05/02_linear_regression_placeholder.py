@@ -40,7 +40,8 @@ sess.run(init)
 for step in range(2000):
     sess.run(train, feed_dict={x: x_data, y_: y_data})
     if step % 20 == 0:
-        print(step, sess.run(cost, feed_dict={x: x_data, y_: y_data}), sess.run(W), sess.run(b))
+        print(step, sess.run(cost, feed_dict={x: x_data, y_: y_data}), \
+            sess.run(W), sess.run(b))
 
 # 得到最佳拟合结果 W: [1.00], b: [0.00]
 
