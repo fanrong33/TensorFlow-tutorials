@@ -1,10 +1,11 @@
 # encoding: utf-8
 # 经典卷积神经网络模型 LeNet-5模型
-# version 1.0.5 build 20180210
+# version 1.0.6 build 20180225
 
 from __future__ import print_function
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
+import time
 
 # number 1 to 10 data
 mnist = input_data.read_data_sets('MNIST_data', one_hot=True)
@@ -18,35 +19,48 @@ def compute_accuracy(v_xs, v_ys):
     result = sess.run(accuracy, feed_dict={xs: v_xs, ys: v_ys, keep_prob: 1})
     return result
 
+
 def weight_variable(shape):
     return tf.Variable(tf.truncated_normal(shape, stddev=0.1))
+
 
 def bias_variable(shape):
     return tf.Variable(tf.constant(0.1, shape=shape))
 
+
 def conv2d(x, W):
     # stride [1, x_movement, y_movement, 1]
     # Must have strides[0] = strides[3] = 1
-    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')
+    return tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME') # VALID
+
 
 def max_pool_2x2(x):
     # stride [1, x_movement, y_movement, 1]
-    return tf.nn.max_pool(x, ksize=[1,2,2,1], strides=[1,2,2,1], padding='SAME')
+    return tf.nn.max_pool(x, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME') # VALID
 
-# define placeholder for inputs to network
+
+def max_poll_4x4(x):
+    return tf.nn.max_pool(x, ksize=[1, 4, 4, 1], strides=[1, 4, 4, 1], padding='SAME') # VALID
+
+
+# 输入：28x28=784的灰度图片，前面的None是batch size
 xs = tf.placeholder(tf.float32, [None, 784])/255. # 28x28
+# 输出：10个分类
 ys = tf.placeholder(tf.float32, [None, 10])
-keep_prob = tf.placeholder(tf.float32)
-x_image=tf.reshape(xs, [-1,28,28,1])
+
+keep_prob = tf.placeholder(tf.float32, name='keep_prob')
+x_image=tf.reshape(xs, [-1, 28, 28, 1])
 # print(x_image.shape)  # [n_samples, 28,28, 1]
 # 调整输入数据placeholder的格式, 输入为一个四维矩阵
+
 
 # 第一层卷积层的尺寸5x5，深度为32的过滤器，过滤器移动的步长为1，且使用全0填充
 # conv1 layer
 W_conv1 = weight_variable([5, 5, 1, 32]) # patch 5x5, in size 1, out size 32
 b_conv1 = bias_variable([32])
-h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)  # output size 28x28x32
 
+h_conv1 = tf.nn.relu(conv2d(x_image, W_conv1) + b_conv1)  # output size 28x28x32
+# 
 # 第二层池化层前向传播过程，最大池化层，过滤器边长为2，使用全0填充且移动的步长为2.
 # pool1 layer
 h_pool1 = max_pool_2x2(h_conv1)                           # output size 14x14x32
@@ -93,13 +107,14 @@ with tf.Session() as sess:
     init = tf.global_variables_initializer()
     sess.run(init)
 
+    start = time.time()
     for step in range(2000):
 
         # 训练数据集
         batch_xs, batch_ys = mnist.train.next_batch(100)
         sess.run(train, feed_dict={xs: batch_xs, ys: batch_ys, keep_prob: 0.5})
         
-        # 每50 epoch 输出一次在验证数据集上的准确率
+        # 每100 epoch 输出一次在验证数据集上的准确率
         if step % 100 == 0:
 
             loss = sess.run(cross_entropy, feed_dict={xs: batch_xs, ys: batch_ys, keep_prob: 0.5})
@@ -111,7 +126,10 @@ with tf.Session() as sess:
             print("After %d training step(s), validation accuracy is %g, loss is %s" % (step, validation_accuracy, loss))
 
             # 持久化模型
-            saver.save(sess, 'save/model.mod')
+            # saver.save(sess, 'save/model.mod')
+
+    cost_time = time.time() - start
+    print("Optimization Finished! Cost Time: %.3fs" % cost_time)
 
 
 
