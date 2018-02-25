@@ -9,7 +9,7 @@ Links:
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-@version: v1.0.0 build 20180225
+@version: v1.0.1 build 20180226
 '''
 
 from __future__ import print_function
@@ -63,6 +63,7 @@ def neural_net(x):
     return out_layer
 
 # Construct model
+# 输出是未归一化的logits，使用tf.softmax()修改网络架构后返回归一化的预测值
 logits = neural_net(x)
 prediction = tf.nn.softmax(logits) # 感觉其实放在定义网络模型中更好，隐藏细节？错
 
