@@ -1,2 +1,0 @@
-model_checkpoint_path: "/Users/fanrong33/kuaipan/github/TensorFlow-tutorials/lab7/my_net/save_net.ckpt"
-all_model_checkpoint_paths: "/Users/fanrong33/kuaipan/github/TensorFlow-tutorials/lab7/my_net/save_net.ckpt"

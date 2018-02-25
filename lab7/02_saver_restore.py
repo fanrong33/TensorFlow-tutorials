@@ -18,7 +18,7 @@ hypothesis = W * X + b
 saver = tf.train.Saver()
 with tf.Session() as sess:
     # 提取变量
-    saver.restore(sess, "my_net/save_net.ckpt");
+    saver.restore(sess, "save/model.mod");
     print("Weight: ", sess.run(W))
     print('biase: ', sess.run(b))
 
