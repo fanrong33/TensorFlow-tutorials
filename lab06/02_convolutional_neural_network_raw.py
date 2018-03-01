@@ -137,7 +137,6 @@ with tf.Session() as sess:
         if step % display_step == 0:
             loss           = sess.run(cost, feed_dict={x: batch_xs, y_: batch_ys, keep_prob: 0.5})
             train_accuracy = sess.run(accuracy, feed_dict={x: batch_xs, y_: batch_ys, keep_prob: 1.0})
-            # accuracy = compute_accuracy(mnist.test.images, mnist.test.labels)
             print('Step %s, Training Accuracy: %.4f , Minibatch Loss: %.3f' % (step, train_accuracy, loss))
             
     cost_time = time.time() - start
@@ -163,4 +162,5 @@ Step 900, Training Accuracy: 0.9766 , Minibatch Loss: 0.116
 Optimization Finished! Cost Time: 556.263s
 Testing Accuracy: 0.9701
 '''
+
 
