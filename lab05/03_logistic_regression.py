@@ -53,7 +53,7 @@ pred = tf.nn.softmax(tf.matmul(x, W) + b) # Softmax
 
 # Minimize error using cross entropy
 # 成本函数 交叉熵算法，分类任务！
-cost = tf.reduce_mean(-tf.reduce_sum(y_*tf.log(pred), reduction_indices=1))
+cost = tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(pred), reduction_indices=1))
 
 # Minimize 最优化算法）采用梯度下降法
 optimizer = tf.train.GradientDescentOptimizer(learning_rate)
