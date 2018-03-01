@@ -9,7 +9,7 @@ Links:
 
 Author: Aymeric Damien
 Project: https://github.com/aymericdamien/TensorFlow-Examples/
-@version: v1.0.1 build 20180226
+@version: v1.0.2 build 20180302
 '''
 
 from __future__ import print_function
@@ -32,7 +32,7 @@ batch_size      = 128
 n_hidden_1  = 256 # 第一个隐藏层网络节点数
 n_hidden_2  = 256 # 第二个隐藏层网络节点数
 num_input   = 784 # MNIST 数据输入 (img shape: 28*28)
-num_classes = 10 # MNIST 总分类 (0-9 digits)
+num_classes = 10  # MNIST 总分类 (0-9 digits)
 
 
 # tf Graph input
@@ -95,7 +95,6 @@ with tf.Session() as sess:
         if step % display_step == 0:
             loss           = sess.run(cost, feed_dict={x: batch_xs, y_: batch_ys})
             train_accuracy = sess.run(accuracy, feed_dict={x: batch_xs, y_: batch_ys})
-            # accuracy = compute_accuracy(mnist.test.images, mnist.test.labels)
             print('Step %s, Training Accuracy: %.4f , Minibatch Loss: %.3f' % (step, train_accuracy, loss))
             
 
