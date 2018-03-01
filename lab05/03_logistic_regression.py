@@ -46,7 +46,6 @@ b = tf.Variable(tf.zeros([10]), name='bias')
 
 
 
-# 构建一个线性模型
 # Construct model
 pred = tf.nn.softmax(tf.matmul(x, W) + b) # Softmax
 
